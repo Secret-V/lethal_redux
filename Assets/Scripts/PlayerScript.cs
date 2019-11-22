@@ -12,6 +12,8 @@ public class PlayerScript : MonoBehaviour
     public float swingDuration;
     public float recoveryDuration;
 
+    public float aimAngle;
+
     //you can add stuff here and just drag a sprite on it in the editor
     //same for the ball, if you want a different visual there
     //spriteRenderer.sprite = whateverSprite; is how you change picture
@@ -58,7 +60,7 @@ public class PlayerScript : MonoBehaviour
     public void OnTriggerStay(Collider otherCollider)
     {
         BallScript ball = otherCollider.GetComponent<BallScript>();
-        if (ball.lastHitter != playerNum) //don't hit the ball twice
+        if (ball != null && ball.lastHitter != playerNum) //don't hit the ball twice
         {
             //you can do exemptions or calculations with this depending on the ball or the player
             float hitPause = 0.1f;
@@ -128,21 +130,27 @@ public class PlayerScript : MonoBehaviour
 
                 if (playerNum == 0)//left side player
                 {
-                    if (Input.GetKey(rightKey))
-                        BallScript.ball.direction = Vector3.right;
-                    if (Input.GetKey(upKey))
-                        BallScript.ball.direction = new Vector2(0.5f, 0.5f);
-                    if (Input.GetKey(downKey))
-                        BallScript.ball.direction = new Vector2(0.5f, -0.5f);
+                    float angle = .0f, angleDivider = 1.0f;
+                    if (Input.GetKey(upKey)) angle -= aimAngle;
+                    if (Input.GetKey(downKey)) angle += aimAngle;
+                    if (Input.GetKey(rightKey)) angleDivider = 2.0f;
+
+                    angle /= angleDivider;
+                    angle += 90.0f;
+
+                    BallScript.ball.direction = new Vector3(Mathf.Sin(angle * Mathf.Deg2Rad), Mathf.Cos(angle * Mathf.Deg2Rad), .0f);
                 }
                 else
                 {
-                    if (Input.GetKey(leftKey))
-                        BallScript.ball.direction = Vector3.left;
-                    if (Input.GetKey(upKey))
-                        BallScript.ball.direction = new Vector2(-0.5f, 0.5f);
-                    if (Input.GetKey(downKey))
-                        BallScript.ball.direction = new Vector2(-0.5f, -0.5f);
+                    float angle = .0f, angleDivider = 1.0f;
+                    if (Input.GetKey(upKey)) angle += aimAngle;
+                    if (Input.GetKey(downKey)) angle -= aimAngle;
+                    if (Input.GetKey(leftKey)) angleDivider = 2.0f;
+
+                    angle /= angleDivider;
+                    angle -= 90.0f;
+
+                    BallScript.ball.direction = new Vector3(Mathf.Sin(angle * Mathf.Deg2Rad), Mathf.Cos(angle * Mathf.Deg2Rad), .0f);
                 }
                 //tip: you can use BallScript.ball to access the ball from anywhere
                 break;

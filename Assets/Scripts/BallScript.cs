@@ -5,6 +5,7 @@ using UnityEngine;
 public class BallScript : MonoBehaviour {
 
     public float startSpeed;
+    public float hitSpeedMultiplier;
     [HideInInspector]
     public float speed;
     [HideInInspector]
@@ -77,7 +78,8 @@ public class BallScript : MonoBehaviour {
         //you can set the starting speed in the editor
         //we can play around with this of course
         //try speed *= 1.1f instead
-        speed = 0.3f;
+        //speed = 0.3f;
+        speed *= hitSpeedMultiplier;
         lastHitter = byPlayer.playerNum;
 
         //default direction set to which player it is
@@ -99,11 +101,15 @@ public class BallScript : MonoBehaviour {
 
         yield return new WaitForSeconds(hitPause);
 
+        Camera.main.GetComponent<LethalCamera>().Shake();
+
         ballState = BallState.NORMAL;
     }
 
     public IEnumerator HitPlayerCoroutine(PlayerScript player)
     {
+        Camera.main.GetComponent<LethalCamera>().Shake();
+
         ballState = BallState.STANDBY;
         position = 1000 * Vector3.down;
         speed = startSpeed;
