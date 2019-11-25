@@ -12,6 +12,8 @@ public class PlayerScript : MonoBehaviour
     public float swingDuration;
     public float recoveryDuration;
 
+    public float hitPause = 0.1f;
+
     public float aimAngle;
 
     //you can add stuff here and just drag a sprite on it in the editor
@@ -62,9 +64,6 @@ public class PlayerScript : MonoBehaviour
         BallScript ball = otherCollider.GetComponent<BallScript>();
         if (ball != null && ball.lastHitter != playerNum) //don't hit the ball twice
         {
-            //you can do exemptions or calculations with this depending on the ball or the player
-            float hitPause = 0.1f;
-            
             ball.GetHit(this, hitPause);//send info to the ball
             StopAllCoroutines(); //stop the swinging 
             StartCoroutine(HitCoroutine(hitPause)); //start the hitting with the right hitpause duration
